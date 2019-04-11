@@ -11,9 +11,15 @@ from microbit import *
 #yellow_switch = 7
 #green_switch = 3
 
-#code = "BABBB"
+code = "BABBB"
+
+correctSeq = "rogyygo"
+currentSeq = "#"
 
 def flash(colour):
+    if colour == "#":
+        return
+
     if colour == "r":
         pin0.write_digital(1)
         sleep(500)
@@ -35,15 +41,65 @@ def flash(colour):
         pin8.write_digital(0)
         sleep(500)
 
+def flashAll():
+    pin0.write_digital(1)
+    pin12.write_digital(1)
+    pin1.write_digital(1)
+    pin8.write_digital(1)
+    sleep(500)
+    pin0.write_digital(0)
+    pin12.write_digital(0)
+    pin1.write_digital(0)
+    pin8.write_digital(0)
 
-while True:
-    display.off()
-    if pin4.read_digital():
-        flash("r")
-    elif pin6.read_digital():
-        flash("o")
-    elif pin7.read_digital():
-        flash("y")
-    elif pin3.read_digital():
-        flash("g")
+def enterCode(colour):
+    if colour == "#":
+        return
     
+    global currentSeq
+    #display.on()
+    if currentSeq == "#":
+        currentSeq = colour
+    else:
+        currentSeq = currentSeq + colour
+    
+    #display.off()
+    #flash(colour)
+
+display.off()
+pin4.read_digital()
+pin6.read_digital()
+pin7.read_digital()
+pin3.read_digital()
+
+def flashSeq():
+    for char in correctSeq:
+        flash(char)
+
+flashSeq()
+
+while correctSeq != currentSeq:
+    lastchar = "#"
+    if pin4.read_digital():
+        lastchar = "r"
+    elif pin6.read_digital():
+        lastchar = "o"
+    elif pin7.read_digital():
+        lastchar = "y"
+    elif pin3.read_digital():
+        lastchar = "g"
+    
+    enterCode(lastchar)
+    if (correctSeq[len(currentSeq) - 1] != currentSeq[len(currentSeq) - 1]) and (currentSeq != "#"):
+        flashAll()
+        currentSeq = "#"
+        sleep(500)
+        flashSeq()
+    else:
+        flash(lastchar)
+
+#flashAll()
+
+display.on()
+while True:
+    display.scroll(code)
