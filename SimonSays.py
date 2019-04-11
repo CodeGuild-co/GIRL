@@ -1,5 +1,6 @@
 # Add your Python code here. E.g.
 from microbit import *
+import random
 
 #red_led = 0
 #orange_led = 1
@@ -13,8 +14,27 @@ from microbit import *
 
 code = "BABBB"
 
-correctSeq = "rogyygo"
+correctSeq = "#"
 currentSeq = "#"
+
+def genRandomColour():
+    i = random.randint(0, 3)
+    if i == 0:
+        return "r"
+    elif i == 1:
+        return "o"
+    elif i == 2:
+        return "y"
+    elif i == 3:
+        return "g"
+
+def appendRandomSequence(length):
+    global correctSeq
+    for i in range(0, length):
+        if correctSeq == "#":
+            correctSeq = genRandomColour()
+        else:
+            correctSeq += genRandomColour()
 
 def flash(colour):
     if colour == "#":
@@ -76,27 +96,40 @@ def flashSeq():
     for char in correctSeq:
         flash(char)
 
-flashSeq()
+appendRandomSequence(3)
 
-while correctSeq != currentSeq:
-    lastchar = "#"
-    if pin4.read_digital():
-        lastchar = "r"
-    elif pin6.read_digital():
-        lastchar = "o"
-    elif pin7.read_digital():
-        lastchar = "y"
-    elif pin3.read_digital():
-        lastchar = "g"
+
+i = 0
+while i < 3:
+    appendRandomSequence(1)
+    flashSeq()
+    while correctSeq != currentSeq:
+        lastchar = "#"
+        if pin4.read_digital():
+            lastchar = "r"
+        elif pin6.read_digital():
+            lastchar = "o"
+        elif pin7.read_digital():
+            lastchar = "y"
+        elif pin3.read_digital():
+            lastchar = "g"
     
-    enterCode(lastchar)
-    if (correctSeq[len(currentSeq) - 1] != currentSeq[len(currentSeq) - 1]) and (currentSeq != "#"):
-        flashAll()
-        currentSeq = "#"
-        sleep(500)
-        flashSeq()
-    else:
-        flash(lastchar)
+        enterCode(lastchar)
+        if (correctSeq[len(currentSeq) - 1] != currentSeq[len(currentSeq) - 1]) and (currentSeq != "#"):
+            flashAll()
+            currentSeq = "#"
+            #display.on()
+            correctSeq = "#"
+            appendRandomSequence(4)
+            #display.off()
+            i = 0
+            sleep(500)
+            flashSeq()
+        else:
+            flash(lastchar)
+    
+    currentSeq = "#"
+    i += 1
 
 #flashAll()
 
