@@ -34,12 +34,14 @@ while not won:
                 display.scroll("You Won! Well Done!")
                 won = True
             else:
-                display.scroll("Wrong code - start again!")
+                display.show("X")
+                sleep(1000)
         else:
-            display.scroll("Wrong code - start again!")
+            display.show("X")
+            sleep(1000)
     else:
-        display.scroll("Wrong code - start again!")
-        
+        display.show("X")
+        sleep(1000)
 
     
         
